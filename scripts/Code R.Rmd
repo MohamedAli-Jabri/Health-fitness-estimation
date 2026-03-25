@@ -1,0 +1,1023 @@
+---
+output:
+  pdf_document:
+    latex_engine: xelatex
+    extra_dependencies: ["geometry"]
+    keep_tex: true
+    number_sections: true
+header-includes:
+  - \usepackage{graphicx}
+  - \usepackage{geometry}
+  - \geometry{margin=1in}
+  - \usepackage{hyperref}
+  - \usepackage{float}
+---
+
+\begin{titlepage}
+\begin{center}
+
+\includegraphics[width=1.5in]{Logo_ESPRIT_Ariana.jpg}
+\hfill
+\includegraphics[width=1.5in]{R.png}
+
+\vspace*{0.4in}
+
+{\Huge \bfseries Estimation de la Condition Physique Liée à la Santé \\ à l’Aide de la Régression Linéaire Multiple \par}
+
+\vspace{0.8in}
+
+{\Large \bfseries Analyse de l’Article Préparée par : \par}
+{\Large Mohamed Khalil Kamessi \par}
+{\Large Farah Baklouti \par}
+{\Large Mohamed Ali Jabri \par}
+{\Large Ines Bendhifallah \par}
+{\Large Najeh Benrebeh \par}
+
+\vspace{0.8in}
+
+\vfill
+
+\begin{tabular}{ll}
+\textbf{Encadrant Académique :} & Youssef Mejri \\
+\textbf{Matière :} & Statistiques \\
+\textbf{Type de Projet :} & Analyse d’un Article Scientifique \\
+\textbf{Année Universitaire :} & 2025–2026 \\
+\end{tabular}
+
+\vspace{0.4in}
+
+
+\vspace{0.2in}
+
+{École Supérieure Privée d’Ingénierie et de Technologies (ESPRIT) \par}
+
+\end{center}
+\end{titlepage}
+
+\pagestyle{plain}
+\setcounter{page}{1}
+
+\begin{center}
+{\Huge \textbf{Table des matières}}
+\end{center}
+
+\tableofcontents
+\newpage
+
+
+
+
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+\section{Introduction}
+
+\subsection{Contexte du projet}
+Dans le domaine des sciences du sport, de la santé publique et de la biométrie, 
+l’analyse statistique des données physiologiques et anthropométriques joue un rôle 
+fondamental dans la compréhension des déterminants de la condition physique humaine. 
+Les indicateurs tels que l’âge, l’indice de masse corporelle (IMC), le pourcentage de 
+masse grasse, la force musculaire, l’endurance et la capacité cardiovasculaire sont 
+largement utilisés pour évaluer l’état de santé et le niveau de forme physique des individus.
+
+Cependant, ces variables présentent souvent des distributions complexes, influencées 
+par des facteurs biologiques, sociaux et comportementaux, notamment le sexe. 
+L’étude statistique rigoureuse de ces données nécessite donc l’utilisation conjointe 
+de méthodes descriptives, de tests de normalité et de tests paramétriques et 
+non paramétriques permettant d’identifier les relations significatives entre les variables.
+
+Dans ce contexte, le présent projet s’inscrit dans une démarche d’analyse statistique 
+approfondie d’un jeu de données réel contenant des informations démographiques, 
+anthropométriques et des mesures de performance physique. 
+Ce travail vise à appliquer différentes techniques statistiques afin de valider des 
+hypothèses, d’évaluer la structure des données et de comparer les groupes selon 
+des variables pertinentes.
+
+Ce projet constitue également une application pratique des concepts théoriques 
+abordés dans le cadre du cours de statistique, en mettant l’accent sur la rigueur 
+méthodologique, l’interprétation correcte des résultats et la justification du choix 
+des tests statistiques utilisés.
+
+\subsection{Objectif du projet}
+L’objectif principal de ce projet est de réaliser une analyse statistique complète 
+et structurée d’un ensemble de données physiologiques et anthropométriques, en vue 
+de mieux comprendre les relations entre les caractéristiques individuelles et 
+les performances physiques.
+
+Plus précisément, ce projet vise à :
+
+\begin{itemize}
+    \item Explorer et décrire les données à l’aide de statistiques descriptives 
+    afin d’identifier les tendances centrales, la dispersion et la structure globale 
+    des variables étudiées.
+    
+   \item Vérifier les hypothèses de normalité des variables quantitatives à l’aide 
+    de tests statistiques appropriés, notamment le test de Shapiro–Wilk, afin de 
+    justifier le choix des méthodes paramétriques ou non paramétriques.
+    
+   \item Détecter et analyser les valeurs aberrantes susceptibles d’influencer 
+    les résultats statistiques.
+    
+   \item Comparer les groupes définis par la variable \textit{sexe} à l’aide de tests 
+    paramétriques (tests t, ANOVA, tests de proportion) et non paramétriques 
+    (tests de Wilcoxon, tests des signes), selon la nature et la distribution des données.
+    
+   \item Étudier les relations entre les variables à travers l’analyse des corrélations 
+    et l’évaluation de leur significativité statistique.
+\end{itemize}
+
+À travers ces objectifs, ce projet cherche à démontrer la capacité des outils 
+statistiques à fournir des résultats fiables et interprétables, tout en mettant en 
+évidence l’importance du choix méthodologique dans l’analyse des données réelles.
+
+\subsection{Description des données}
+Les données utilisées dans ce projet proviennent d’un ensemble de mesures 
+physiologiques, anthropométriques et de performance physique collectées auprès 
+d’un échantillon d’individus. 
+Chaque observation correspond à un individu et regroupe des informations 
+démographiques, des caractéristiques corporelles ainsi que des indicateurs 
+de condition physique.
+
+Les variables étudiées ont été sélectionnées afin de couvrir différents 
+aspects de la condition physique, notamment la composition corporelle, 
+la force musculaire, l’endurance musculaire, la flexibilité et la capacité 
+cardiorespiratoire. 
+La présence de variables qualitatives et quantitatives permet de mener des 
+analyses statistiques variées, incluant des comparaisons de groupes et des tests 
+d’hypothèses.
+
+La variable \textit{sexe} est utilisée comme variable de stratification afin 
+d’analyser les différences potentielles entre les groupes masculins et féminins, 
+tandis que les variables quantitatives sont exploitées pour évaluer les relations 
+statistiques et les performances physiques.
+
+\begin{table}[H]
+\centering
+\caption{Description des variables du jeu de données}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Variable} & \textbf{Type} & \textbf{Description} \\
+\hline
+sex & Qualitative & Sexe de l’individu (M : masculin, F : féminin) \\
+\hline
+age & Quantitative & Âge de l’individu (en années) \\
+\hline
+bmi & Quantitative & Indice de masse corporelle (kg/m$^2$) \\
+\hline
+percent\_body\_fat & Quantitative & Pourcentage de masse grasse corporelle (\%) \\
+\hline
+hand\_grip\_strength\_kg & Quantitative & Force de préhension manuelle (kg) \\
+\hline
+sit\_ups\_count & Quantitative & Nombre de redressements assis réalisés \\
+\hline
+sit\_and\_reach\_cm & Quantitative & Mesure de flexibilité (cm) \\
+\hline
+vo2\_estimate\_ml\_per\_kg\_min & Quantitative & Estimation du VO$_2$max (ml/kg/min) \\
+\hline
+\end{tabular}
+\end{table}
+
+
+\section{Importation et Préparation des Données}
+Cette section a pour objectif de présenter les étapes préliminaires nécessaires 
+à l’analyse statistique des données. 
+Elle comprend le chargement des bibliothèques requises, l’importation du jeu de 
+données, une exploration initiale des variables ainsi que l’étude de la distribution 
+des variables quantitatives. 
+Ces étapes sont essentielles pour assurer la qualité des analyses statistiques 
+réalisées par la suite et pour orienter le choix des méthodes appropriées.
+\subsection{Chargement des packages}
+
+L’analyse des données a été réalisée à l’aide du logiciel \texttt{R}, en utilisant 
+plusieurs bibliothèques spécialisées. 
+Ces packages permettent respectivement la lecture des fichiers de données, la 
+manipulation des données, la visualisation graphique, l’analyse statistique et la 
+modélisation.
+
+\begin{itemize}
+    \item \texttt{openxlsx} et \texttt{readxl} : importation de fichiers Excel ;
+    \item \texttt{dplyr} et \texttt{tidyr} : manipulation et transformation des données ;
+    \item \texttt{ggplot2} et \texttt{gridExtra} : visualisation graphique ;
+    \item \texttt{psych} : statistiques descriptives ;
+    \item \texttt{corrplot} : visualisation des corrélations ;
+    \item \texttt{MASS} : méthodes statistiques avancées, notamment la régression pas à pas ;
+    \item \texttt{naniar} : détection et visualisation des valeurs manquantes.
+\end{itemize}
+
+
+```{r}
+library(openxlsx)
+library(readxl)
+library(dplyr)
+library(ggplot2)
+library(psych)
+library(corrplot)
+library(MASS) 
+library(naniar)
+library(tidyr)
+library(gridExtra)
+```
+
+\subsection{Importation et exploration initiale}
+
+Le jeu de données est importé à partir d’un fichier Excel à l’aide de la fonction 
+\texttt{read.xlsx}. 
+Une fois les données chargées, une exploration initiale est réalisée afin de 
+visualiser les premières observations, de résumer les principales caractéristiques 
+statistiques et d’examiner la structure des variables.
+
+Les fonctions \texttt{head()}, \texttt{summary()} et \texttt{str()} sont utilisées 
+pour obtenir respectivement un aperçu des premières lignes du jeu de données, 
+des statistiques descriptives générales et des informations sur le type de chaque 
+variable.
+
+
+```{r, echo=FALSE}
+data <- read.xlsx(file.choose(), sheet = 1)
+head(data)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+if("participant_id" %in% colnames(data)) {
+  data <- data %>% dplyr::select(-participant_id)
+}
+head(data)
+```
+
+```{r}
+summary(data)
+```
+
+
+```{r}
+str(data)
+```
+
+
+```{r}
+num_vars <- c("bmi", "percent_body_fat", "hand_grip_strength_kg",
+              "sit_and_reach_cm", "sit_ups_count", "vo2_estimate_ml_per_kg_min")
+```
+
+
+\subsection{Vérification de la densité des variables}
+
+L’étude de la distribution des variables quantitatives constitue une étape clé 
+de l’analyse exploratoire. 
+Elle permet d’évaluer visuellement la forme des distributions, d’identifier 
+d’éventuelles asymétries et d’anticiper le choix des tests statistiques appropriés.
+
+Pour chaque variable numérique, un histogramme accompagné de sa courbe de densité 
+est tracé. 
+Cette représentation graphique facilite l’appréciation de la normalité ou de la 
+non-normalité des distributions et met en évidence la présence éventuelle de valeurs 
+extrêmes.
+
+```{r}
+numeric_vars <- data %>% dplyr:: select(where(is.numeric))
+
+for (col in names(numeric_vars)) {
+  print(
+    ggplot(data, aes_string(col)) +
+      geom_histogram(aes(y = ..density..), bins = 30,
+                     fill = "skyblue", color = "black", alpha = 0.7) +
+      geom_density(color = "red", size = 1) +
+      ggtitle(paste("Histogramme + Densité :", col))
+  )
+}
+```
+\subsection{Détection des valeurs aberrantes}
+La détection des valeurs aberrantes constitue une étape importante de l’analyse 
+exploratoire des données, car la présence d’observations extrêmes peut influencer 
+les statistiques descriptives, les tests d’hypothèses et les modèles statistiques 
+ultérieurs.
+
+Dans cette étude, les valeurs aberrantes sont identifiées à l’aide d’une approche 
+graphique basée sur les \textit{boxplots}. 
+Afin de faciliter la comparaison simultanée des différentes variables numériques, 
+les données sont d’abord transformées au format long, chaque observation étant 
+associée à une variable et à une valeur correspondante.
+
+Les boxplots représentent la distribution des données à l’aide de la médiane, 
+des quartiles et des étendues interquartiles. 
+Les observations situées en dehors des bornes définies par l’intervalle 
+\([Q_1 - 1.5 \times IQR, \; Q_3 + 1.5 \times IQR]\) sont considérées comme des valeurs 
+aberrantes et sont mises en évidence graphiquement.
+
+Cette visualisation permet d’identifier rapidement les variables présentant une 
+forte dispersion ou un nombre important de valeurs extrêmes. 
+
+
+```{r}
+data_long_before <- data %>%
+  dplyr::select(all_of(num_vars)) %>%
+  pivot_longer(cols = everything(),
+               names_to = "variable",
+               values_to = "value")
+
+boxplot_before <- ggplot(data_long_before, aes(x = variable, y = value)) +
+  geom_boxplot(fill = "lightblue", outlier.color = "red", outlier.shape = 16) +
+  theme_minimal() +
+  labs(title = "Boxplots des variables numériques",
+       x = "Variable",
+       y = "Valeur") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+print(boxplot_before)
+```
+\subsection{Vérification des corrélations}
+% 2.6 Vérification des corrélations
+
+
+```{r}
+y_vars <- c(
+  "sit_and_reach_cm",
+  "vo2_estimate_ml_per_kg_min",
+  "sit_ups_count",
+  "hand_grip_strength_kg"
+)
+
+x_vars <- c("age", "bmi", "percent_body_fat")
+```
+
+
+```{r}
+library(ggplot2)
+
+for (y in y_vars) {
+  for (x in x_vars) {
+    
+    p <- ggplot(data, aes_string(x = x, y = y)) +
+      geom_point(alpha = 0.5, color = "steelblue") +
+      geom_smooth(method = "lm", se = FALSE, color = "red") +
+      theme_minimal() +
+      labs(
+        title = paste("Relation entre", y, "et", x),
+        x = x,
+        y = y
+      )
+    
+    print(p)
+  }
+}
+
+```
+
+
+
+
+```{r}
+cor_matrix <- cor(data[num_vars], use = "complete.obs")
+corrplot(cor_matrix,
+         method = "color",
+         type = "upper",
+         addCoef.col = "black",
+         number.cex = 0.75,
+         tl.cex = 0.8)
+
+```
+
+Après avoir tracé les diagrammes de dispersion entre les variables explicatives 
+(\textit{age}, \textit{bmi}, \textit{percent\_body\_fat}) et les variables à prédire 
+(\textit{hand\_grip\_strength\_kg}, \textit{sit\_ups\_count}, 
+\textit{sit\_and\_reach\_cm}, \textit{vo2\_estimate\_ml\_per\_kg\_min}), on observe 
+les relations suivantes :
+
+\begin{itemize}
+    \item \textbf{Hand Grip Strength (kg)} : une tendance linéaire négative est 
+    clairement visible avec le pourcentage de masse grasse, ce qui indique que 
+    l’augmentation de la masse grasse est associée à une diminution de la force de préhension. 
+    
+   \item \textbf{VO$_2$ Estimate (ml/kg/min)} : on note également une tendance 
+    linéaire négative avec le pourcentage de masse grasse, suggérant que la capacité 
+    cardiovasculaire diminue lorsque le pourcentage de masse grasse augmente.
+    
+   \item \textbf{Sit-ups Count et Sit and Reach (cm)} : aucune relation linéaire 
+    évidente n’est observée avec les variables explicatives. Les points sont 
+    dispersés, indiquant que ces performances ne sont pas fortement prédictibles 
+    à partir de l’âge, du BMI ou du pourcentage de masse grasse.
+\end{itemize}
+
+La matrice de corrélation (heatmap) confirme ces observations : les coefficients 
+les plus marqués concernent la relation négative entre le pourcentage de masse grasse 
+et la force musculaire ainsi que la capacité cardiovasculaire. Les autres relations 
+restent faibles ou non significatives.
+
+Ces résultats confirment que le pourcentage de masse grasse est un prédicteur important 
+de la force de préhension et de la VO$_2$ estimate, tandis que la flexibilité et 
+l’endurance musculaire nécessitent d’autres variables explicatives pour être modélisées 
+de manière fiable.
+
+\section{Analyse Statistique Avancée}
+
+L’Analyse Statistique Avancée vise à approfondir l’étude des données physiologiques et anthropométriques afin de mieux comprendre les relations entre les différentes variables. Cette étape permet d’évaluer la normalité des distributions, de comparer les caractéristiques physiques entre différents groupes d’individus et d’identifier des tendances ou corrélations importantes. 
+
+Elle constitue une préparation essentielle à la modélisation statistique, car elle permet de vérifier les hypothèses nécessaires à l’application des tests paramétriques et non paramétriques, ainsi qu’aux modèles de régression. En explorant plus finement les interactions et les variations au sein des données, cette analyse fournit une base solide pour interpréter les résultats et tirer des conclusions fiables sur la condition physique des individus étudiés.
+
+\subsection{Vérification de la densité des variables}
+
+```{r}
+# Select numeric variables
+numeric_vars <- data[, sapply(data, is.numeric)]
+
+# Initialize lists to store results
+results <- data.frame(
+  Variable = character(),
+  Shapiro_W = numeric(),
+  Shapiro_p = numeric(),
+  KS_Statistic = numeric(),
+  KS_p = numeric(),
+  stringsAsFactors = FALSE
+)
+
+# Loop through each numeric variable
+for (var in names(numeric_vars)) {
+  
+  # Shapiro-Wilk test
+  shapiro_res <- shapiro.test(numeric_vars[[var]])
+  
+  # Kolmogorov-Smirnov test against normal distribution
+  ks_res <- ks.test(
+    numeric_vars[[var]],
+    "pnorm",
+    mean(numeric_vars[[var]], na.rm = TRUE),
+    sd(numeric_vars[[var]], na.rm = TRUE)
+  )
+  
+  # Store results
+  results <- rbind(
+    results,
+    data.frame(
+      Variable = var,
+      Shapiro_p = round(shapiro_res$p.value, 4),
+      KS_p = round(ks_res$p.value, 4)
+    )
+  )
+}
+
+# Print table
+results
+```
+
+
+
+Pour évaluer la normalité des variables quantitatives, deux tests statistiques complémentaires ont été utilisés : le test de Shapiro–Wilk et le test de Kolmogorov–Smirnov. Ces tests permettent de déterminer si la distribution des variables s’écarte significativement d’une distribution normale.  
+
+Les résultats obtenus peuvent être résumés comme suit :
+
+\begin{itemize}
+    \item \textbf{Age :} Les deux tests indiquent une distribution non normale (p < 0.05), suggérant une répartition asymétrique de l’âge dans l’échantillon.
+    
+   \item \textbf{BMI :} Le test de Shapiro–Wilk (p = 0.1413) et le test de Kolmogorov–Smirnov (p = 0.7044) confirment tous deux une distribution approximativement normale.
+    
+  \item \textbf{Percent Body Fat :} Les deux tests révèlent une distribution non normale (p < 0.05), indiquant une forte variabilité individuelle et une asymétrie.
+    
+  \item \textbf{Hand Grip Strength (kg) :} Shapiro–Wilk indique une distribution non normale (p < 0.05), tandis que Kolmogorov–Smirnov suggère une légère déviation (p = 0.0181), montrant une distribution légèrement asymétrique.
+    
+  \item \textbf{Sit and Reach (cm) :} Les deux tests confirment une distribution normale (Shapiro–Wilk : p = 0.4410 ; Kolmogorov–Smirnov : p = 0.9692).
+    
+  \item \textbf{Sit-ups Count :} Les deux tests montrent une distribution non normale (p < 0.05), reflétant une variabilité élevée et la présence d’outliers.
+    
+  \item \textbf{VO$_2$ Estimate (ml/kg/min) :} Les deux tests indiquent une distribution normale (Shapiro–Wilk : p = 0.9484 ; Kolmogorov–Smirnov : p = 0.9331).
+\end{itemize}
+
+\noindent En comparant les résultats des deux tests, on remarque que :  
+- La majorité des variables présentent des résultats cohérents entre les deux tests.  
+- Certaines variables, comme \textit{hand grip strength}, montrent de légères différences, Kolmogorov–Smirnov étant un peu plus tolérant aux écarts par rapport à la normalité.  
+
+\noindent Globalement, certaines variables peuvent être considérées comme approximativement normales (\textit{BMI, Sit and Reach, VO$_2$ Estimate}), tandis que d’autres (\textit{Age, Percent Body Fat, Hand Grip Strength, Sit-ups Count}) nécessitent des méthodes non paramétriques pour les analyses ultérieures ou des transformations pour satisfaire l’hypothèse de normalité.
+
+
+\subsection{Convergence vers la normalité des moyennes (Bootstrap)}
+
+```{r}
+set.seed(123)
+n_boot <- 1000
+boot_means <- numeric(n_boot)
+
+for(i in 1:n_boot){
+  sample_i <- sample(data$age, size = length(data$age), replace = TRUE)
+  boot_means[i] <- mean(sample_i)
+}
+
+# Check normality of bootstrapped means
+shapiro.test(boot_means)
+library(dplyr)
+
+# Identify numeric variables
+numeric_vars <- sapply(data, is.numeric)
+
+# Initialize results dataframe
+convergence_results <- data.frame(
+  Variable = names(data)[numeric_vars],
+  Original_Shapiro_p = NA,
+  Bootstrap_Shapiro_p = NA
+)
+
+set.seed(123)  # for reproducibility
+n_boot <- 1000  # number of bootstrap iterations
+
+for(i in 1:length(convergence_results$Variable)){
+  
+  var_name <- convergence_results$Variable[i]
+  var_data <- data[[var_name]]
+  
+  # 1️⃣ Original Shapiro-Wilk test
+  sh <- shapiro.test(var_data)
+  convergence_results$Original_Shapiro_p[i] <- sh$p.value
+  
+  # 2️⃣ Bootstrap means
+  boot_means <- replicate(n_boot, mean(sample(var_data, size = length(var_data), replace = TRUE)))
+  
+  # Shapiro-Wilk test on bootstrap means
+  sh_boot <- shapiro.test(boot_means)
+  convergence_results$Bootstrap_Shapiro_p[i] <- sh_boot$p.value
+}
+
+# Add interpretation columns
+convergence_results <- convergence_results %>%
+  mutate(
+    Original_Normality = ifelse(Original_Shapiro_p > 0.05, "Normal", "Not Normal"),
+    Bootstrap_Normality = ifelse(Bootstrap_Shapiro_p > 0.05, "Converges to Normal", "Does Not Converge")
+  )
+
+# View results
+print(convergence_results)
+
+```
+
+
+Le \textbf{bootstrap} est une méthode statistique qui consiste à générer de nombreux échantillons aléatoires avec remise à partir des données originales, afin d’estimer la distribution d’une statistique (par exemple, la moyenne) sans faire d’hypothèses strictes sur la distribution initiale des données. Cette approche permet d’évaluer la variabilité et la robustesse des estimations et de vérifier des propriétés comme la convergence vers une distribution normale, conformément au théorème central limite.
+
+Pour compléter l’analyse de la distribution des variables numériques, nous avons utilisé le bootstrap pour calculer les moyennes de chaque variable sur 1000 échantillons tirés avec remise, puis testé la normalité de ces moyennes à l’aide du test de Shapiro-Wilk.
+
+Les résultats obtenus peuvent être résumés ainsi :
+
+\begin{itemize}
+    \item Certaines variables, telles que \textbf{l’âge} ou le \textbf{pourcentage de masse grasse}, étaient non normales selon le test de Shapiro-Wilk sur les données originales. Après bootstrap, les distributions de leurs moyennes convergent vers une distribution normale, conformément au théorème central limite.
+    \item D’autres variables, comme le \textbf{BMI}, \textbf{sit and reach}, ou le \textbf{VO₂ estimé}, étaient proches de la normalité initialement et leurs moyennes bootstrap confirment cette normalité.
+    \item Dans tous les cas, les moyennes bootstrap des variables étudiées montrent une tendance à \textbf{converger vers une distribution normale}, même pour celles qui ne sont pas normales initialement.
+\end{itemize}
+
+Cette approche permet de justifier l’utilisation de méthodes statistiques paramétriques basées sur la normalité des moyennes, telles que les tests t ou la régression linéaire, en s’appuyant sur la robustesse apportée par la convergence des échantillons bootstrap.
+
+En résumé, bien que certaines variables originales ne respectent pas strictement la normalité, l’analyse bootstrap démontre que leurs moyennes peuvent être traitées comme approximativement normales pour les analyses statistiques ultérieures.
+
+\subsection{Test ANOVA}
+
+Afin d'examiner les différences entre les groupes pour plusieurs variables quantitatives, nous avons procédé en plusieurs étapes : calcul des moyennes par groupe, vérification de la normalité, puis application des tests statistiques appropriés (T-tests et ANOVA).
+\subsubsection{Création des groupes}
+
+```{r}
+tapply(data$hand_grip_strength_kg, data$sex, mean, na.rm = TRUE)
+tapply(data$vo2_estimate_ml_per_kg_min, cut(data$age, breaks=c(20,30,40,50,60,70)), mean, na.rm = TRUE)
+tapply(data$percent_body_fat, cut(data$bmi, breaks=c(10,20,25,30,38)), mean, na.rm = TRUE)
+tapply(data$sit_ups_count, cut(data$age, breaks=c(20,30,40,50,60)), mean, na.rm = TRUE)
+```
+\begin{itemize}
+    \item \textbf{Force de préhension} selon le sexe :  
+    Les hommes présentent une moyenne de 41.10 kg et les femmes de 25.15 kg, indiquant une différence notable entre les sexes.
+    
+  \item \textbf{VO₂ estimé} selon les tranches d'âge :  
+    On observe une diminution progressive du VO₂ estimé avec l'âge, de 38.58 ml/kg/min pour les 20-30 ans à 32.52 ml/kg/min pour les 60-70 ans.
+    
+   \item \textbf{Pourcentage de masse grasse} selon les catégories de BMI :  
+    Les moyennes augmentent légèrement avec l'IMC, reflétant la corrélation attendue entre masse grasse et BMI.
+    
+   \item \textbf{Nombre de sit-ups} selon l'âge :  
+    On note une diminution progressive des performances physiques avec l'âge.
+\end{itemize}
+
+Pour certaines analyses, nous avons créé des groupes catégoriels :
+
+\begin{itemize}
+    \item \textbf{sex\_int} : 0 pour les femmes, 1 pour les hommes.
+    \item \textbf{age\_group} : tranches d'âge de 10 ans de 20 à 70 ans.
+    \item \textbf{bmi\_group} : catégories de BMI.
+    \item \textbf{fat\_group} : catégories de pourcentage de masse grasse.
+\end{itemize}
+
+```{r}
+# Création des groupes
+data$sex_int <- ifelse(data$sex == "M", 1, 0)
+age_group <- cut(data$age, breaks=c(20,30,40,50,60,70), include.lowest = TRUE)
+bmi_group <- cut(data$bmi, breaks=c(10,20,30,40), include.lowest = TRUE)
+fat_group <- cut(data$percent_body_fat, breaks=c(25,35,40,50,60), include.lowest = TRUE)
+```
+
+\subsubsection{ANOVA et tests de Bartlett}
+
+```{r}
+# ANOVA + Bartlett
+bartlett.test(vo2_estimate_ml_per_kg_min ~ age_group, data = data)
+anova_vo2 <- aov(vo2_estimate_ml_per_kg_min ~ age_group, data = data)
+summary(anova_vo2)
+
+```
+
+
+```{r}
+# ANOVA + Bartlett
+bartlett.test(sit_and_reach_cm ~ age_group, data = data)
+anova_sit <- aov(sit_and_reach_cm ~ age_group, data = data)
+summary(anova_sit)
+
+```
+
+
+```{r}
+# ANOVA + Bartlett
+bartlett.test(vo2_estimate_ml_per_kg_min ~ sex_int, data = data)
+anova_sex <- aov(vo2_estimate_ml_per_kg_min ~ sex_int, data = data)
+summary(anova_sex)
+
+```
+
+
+```{r}
+# ANOVA + Bartlett
+bartlett.test(sit_and_reach_cm ~ sex_int, data = data)
+anova_sit_sexe <- aov(sit_and_reach_cm ~ sex_int, data = data)
+summary(anova_sit_sexe)
+
+```
+
+
+```{r}
+# ANOVA + Bartlett
+bartlett.test(vo2_estimate_ml_per_kg_min ~ bmi_group, data = data)
+anova_bmi <- aov(vo2_estimate_ml_per_kg_min ~ bmi_group, data = data)
+summary(anova_bmi)
+
+```
+
+
+```{r}
+# ANOVA + Bartlett
+bartlett.test(sit_and_reach_cm ~ bmi_group, data = data)
+anova_sit_bmi <- aov(sit_and_reach_cm ~ bmi_group, data = data)
+summary(anova_sit_bmi)
+
+
+```
+```{r}
+# ANOVA + Bartlett
+bartlett.test(sit_and_reach_cm ~ fat_group, data = data)
+anova_sit_fat <- aov(sit_and_reach_cm ~ fat_group, data = data)
+summary(anova_sit_fat)
+```
+
+```{r}
+bartlett.test(vo2_estimate_ml_per_kg_min ~ fat_group, data = data)
+anova_fat <- aov(vo2_estimate_ml_per_kg_min ~ fat_group, data = data)
+summary(anova_fat)
+TukeyHSD(anova_fat)
+```
+
+
+Pour chaque variable quantitative, nous avons vérifié l'homogénéité des variances avec le test de Bartlett avant d'appliquer l'ANOVA.
+
+\begin{itemize}
+    \item \textbf{VO₂ estimé selon l'âge} :  
+    Le test de Bartlett montre que les variances sont homogènes ($p = 0.694$). L'ANOVA révèle une différence significative entre les groupes d'âge ($F = 42.58$, $p < 2e-16$).
+
+  \item \textbf{Sit and reach selon l'âge} :  
+    Variances homogènes ($p = 0.505$). L'ANOVA indique une différence significative ($F = 3.599$, $p = 0.006$).
+
+  \item \textbf{VO₂ estimé selon le sexe} :  
+    Variances homogènes ($p = 0.882$). L'ANOVA montre une différence très significative entre hommes et femmes ($F = 422.5$, $p < 2e-16$).
+
+  \item \textbf{Sit and reach selon le sexe} :  
+    Variances homogènes ($p = 0.127$). L'ANOVA révèle également une différence significative ($F = 49.64$, $p < 0.001$).
+
+  \item \textbf{VO₂ estimé et sit and reach selon le BMI} :  
+    Variances homogènes ($p > 0.35$). L'ANOVA n'indique pas de différences significatives pour VO₂ selon le BMI ($p = 0.364$) ni pour sit and reach ($p = 0.151$).
+
+  \item \textbf{Sit and reach selon le pourcentage de masse grasse} :  
+    Variances homogènes ($p = 0.119$). L'ANOVA montre une différence significative entre les groupes ($F = 11.62$, $p < 0.001$).
+
+  \item \textbf{VO₂ estimé selon le pourcentage de masse grasse} :  
+    Variances homogènes ($p = 0.355$). L'ANOVA révèle des différences très significatives ($F = 126.3$, $p < 2e-16$), et le test de comparaisons multiples de Tukey montre que les différences concernent surtout le groupe 50-60\% par rapport aux autres.
+\end{itemize}
+
+\subsubsection{Conclusion}
+
+Les tests ANOVA et les tests de Bartlett confirment que certaines variables présentent des différences significatives entre les groupes selon le sexe, l'âge ou la composition corporelle, tandis que d'autres variables ne montrent pas de différences notables selon le BMI. Les comparaisons multiples de Tukey permettent d'identifier plus précisément les groupes qui diffèrent significativement.
+
+\subsection{Comparaison selon le sexe : analyse des moyennes et des variances}
+L’objectif principal de cette section est d’étudier l’influence du \textbf{sexe} sur les différentes variables anthropométriques et de condition physique. Pour cela, les données ont été divisées en deux groupes (femmes et hommes), puis une analyse statistique en deux étapes a été réalisée : une analyse descriptive afin de comparer les niveaux moyens et la dispersion des variables, suivie de tests inférentiels portant sur l’égalité des variances (test de Fisher) et la comparaison des moyennes (test t de Student). Cette approche permet d’identifier de manière rigoureuse les différences significatives entre les deux sexes.
+
+```{r}
+tapply(data$bmi, data$sex, summary)
+tapply(data$sit_and_reach_cm, data$sex, summary)
+tapply(data$vo2_estimate_ml_per_kg_min, data$sex, summary)
+tapply(data$age, data$sex, summary)
+tapply(data$percent_body_fat, data$sex, summary)
+tapply(data$hand_grip_strength_kg, data$sex, summary)
+tapply(data$sit_ups_count, data$sex, summary)
+```
+\subsubsection{Indice de masse corporelle (BMI)}
+
+L’analyse descriptive montre que le BMI moyen est légèrement plus élevé chez les hommes (24.41) que chez les femmes (23.08). Le test t de Student indique que cette différence de moyenne est statistiquement significative ($p < 2.2 \times 10^{-16}$). Le test de Fisher met en évidence une différence significative entre les variances ($p < 0.001$), suggérant une dispersion différente du BMI selon le sexe. Ces résultats indiquent que le sexe influence à la fois le niveau moyen et la variabilité du BMI.
+
+```{r}
+t.test(bmi ~ sex, data = data, var.equal = TRUE)
+var.test(bmi ~ sex, data = data)
+```
+\subsubsection{Flexibilité (Sit and Reach)}
+
+Les femmes présentent une flexibilité moyenne supérieure (9.26 cm) à celle des hommes (7.24 cm). Le test t confirme que cette différence est statistiquement significative ($p < 0.001$). En revanche, le test de Fisher ne met pas en évidence de différence significative entre les variances ($p = 0.129$), indiquant une dispersion comparable de la flexibilité entre les deux sexes.
+
+```{r}
+t.test(sit_and_reach_cm ~ sex, data = data, var.equal = TRUE)
+var.test(sit_and_reach_cm ~ sex, data = data)
+```
+\subsubsection{Capacité cardiorespiratoire (VO$_2$ estimé)}
+
+La moyenne du VO$_2$ estimé est nettement plus élevée chez les hommes (38.32 ml/kg/min) que chez les femmes (32.01 ml/kg/min). Le test t de Student montre une différence très significative entre les deux groupes ($p < 2.2 \times 10^{-16}$). Le test de Fisher indique que les variances sont homogènes ($p = 0.889$), ce qui confirme que la différence observée porte principalement sur le niveau moyen et non sur la dispersion.
+
+
+
+```{r}
+t.test(vo2_estimate_ml_per_kg_min ~ sex, data = data, var.equal = TRUE)
+var.test(vo2_estimate_ml_per_kg_min ~ sex, data = data)
+```
+\subsubsection{Âge}
+
+Les moyennes d’âge sont très proches entre les femmes (41.82 ans) et les hommes (41.41 ans). Le test t ne révèle aucune différence significative entre les deux groupes ($p = 0.515$). De plus, le test de Fisher confirme l’égalité des variances ($p = 0.576$). Ainsi, l’âge ne constitue pas un facteur différenciant entre les sexes dans cet échantillon.
+
+
+
+```{r}
+# Age
+var.test(age ~ sex, data = data)
+t.test(age ~ sex, data = data, var.equal = TRUE)
+```
+\subsubsection{Pourcentage de masse grasse}
+
+Le pourcentage de masse grasse est significativement plus élevé chez les femmes (56.43\%) que chez les hommes (43.69\%). Le test t de Student confirme une différence extrêmement significative des moyennes ($p < 2.2 \times 10^{-16}$). Le test de Fisher indique également une différence marquée des variances ($p < 2.2 \times 10^{-16}$), suggérant une plus grande hétérogénéité de la masse grasse selon le sexe.
+
+
+
+```{r}
+# Percent body fat
+var.test(percent_body_fat ~ sex, data = data)
+t.test(percent_body_fat ~ sex, data = data, var.equal = TRUE)
+
+```
+\subsubsection{Force de préhension (Hand Grip Strength)}
+
+La force de préhension moyenne est nettement plus élevée chez les hommes (41.10 kg) que chez les femmes (25.15 kg). Le test t révèle une différence très significative ($p < 2.2 \times 10^{-16}$). Le test de Fisher indique une différence significative entre les variances ($p < 0.001$), montrant que la dispersion de la force de préhension varie également selon le sexe.
+
+
+
+```{r}
+# Hand grip strength
+var.test(hand_grip_strength_kg ~ sex, data = data)
+t.test(hand_grip_strength_kg ~ sex, data = data, var.equal = TRUE)
+
+```
+\subsubsection{Endurance musculaire (Nombre de sit-ups)}
+
+Les femmes réalisent en moyenne davantage de sit-ups (19.35) que les hommes (16.80). Le test t de Student montre que cette différence est statistiquement significative ($p < 2.2 \times 10^{-16}$). Le test de Fisher met en évidence une différence significative des variances ($p = 0.0014$), indiquant une variabilité différente de l’endurance musculaire entre les sexes.
+
+```{r}
+# Sit-ups count
+var.test(sit_ups_count ~ sex, data = data)
+t.test(sit_ups_count ~ sex, data = data, var.equal = TRUE)
+```
+\subsubsection{Conclusion}
+
+L’analyse des moyennes et des variances selon le sexe met en évidence des différences significatives pour la majorité des variables de condition physique et de composition corporelle. À l’exception de l’âge, toutes les variables étudiées présentent des différences significatives de moyenne entre les hommes et les femmes, confirmant le rôle important du sexe dans l’évaluation de la condition physique et des indicateurs de santé.
+
+\subsection{Analyse comparative selon les groupes d’âge}
+
+Cette sous-section a pour objectif d’analyser l’influence de l’âge sur plusieurs indicateurs anthropométriques et de performance physique. Pour cela, la population a été divisée en deux groupes indépendants : les individus âgés de 35 ans ou moins (\textit{Under\_35}) et ceux âgés de plus de 35 ans (\textit{Over\_35}).
+Dans un premier temps, des statistiques descriptives ont été calculées afin de comparer les distributions des variables dans chaque groupe. Ensuite, des tests de comparaison de variances (test de Fisher) ont été appliqués afin de vérifier l’homogénéité des dispersions entre les deux groupes, condition préalable à l’utilisation de tests paramétriques de comparaison des moyennes.
+
+
+
+```{r}
+# Create age group variable
+data$age_group_35 <- ifelse(data$age <= 35, "Under_35", "Over_35")
+tapply(data$bmi, data$age_group_35, summary)
+tapply(data$percent_body_fat, data$age_group_35, summary)
+tapply(data$hand_grip_strength_kg, data$age_group_35, summary)
+tapply(data$sit_ups_count, data$age_group_35, summary)
+tapply(data$sit_and_reach_cm, data$age_group_35, summary)
+tapply(data$vo2_estimate_ml_per_kg_min, data$age_group_35, summary)
+```
+
+```{r}
+# BMI
+var.test(bmi ~ age_group_35, data = data)
+# Percent body fat
+var.test(percent_body_fat ~ age_group_35, data = data)
+# Hand grip strength
+var.test(hand_grip_strength_kg ~ age_group_35, data = data)
+# Sit-ups
+var.test(sit_ups_count ~ age_group_35, data = data)
+# Sit-and-reach
+var.test(sit_and_reach_cm ~ age_group_35, data = data)
+# VO2
+var.test(vo2_estimate_ml_per_kg_min ~ age_group_35, data = data)
+```
+\paragraph{Indice de masse corporelle (BMI)}
+Les moyennes du BMI sont très proches entre les deux groupes (23.95 pour les individus de 35 ans ou moins contre 24.00 pour les individus de plus de 35 ans). Le test de Fisher ne met pas en évidence de différence significative entre les variances (p = 0.8611), indiquant une dispersion similaire du BMI dans les deux groupes d’âge.
+
+\paragraph{Pourcentage de masse grasse}
+Le pourcentage moyen de masse grasse est comparable entre les deux groupes (47.62 pour les moins de 35 ans et 47.89 pour les plus de 35 ans). Le test de comparaison des variances n’est pas significatif (p = 0.3071), ce qui suggère une variabilité homogène de la masse grasse indépendamment de l’âge.
+
+\paragraph{Force de préhension}
+La force de préhension moyenne est légèrement plus élevée chez les individus de plus de 35 ans (36.20 kg) que chez les plus jeunes (35.53 kg). Toutefois, le test de Fisher indique une égalité des variances entre les deux groupes (p = 0.5133), montrant une dispersion comparable des performances musculaires.
+
+\paragraph{Nombre de sit-ups}
+Les individus de 35 ans ou moins présentent en moyenne un nombre de sit-ups légèrement supérieur (18.27) par rapport aux individus de plus de 35 ans (17.25). Le test de Fisher ne révèle pas de différence significative entre les variances (p = 0.1033), indiquant une variabilité similaire de l’endurance musculaire entre les deux groupes.
+
+\paragraph{Souplesse (sit-and-reach)}
+La souplesse moyenne est légèrement plus élevée chez les individus de moins de 35 ans (8.37 cm) que chez les individus plus âgés (7.61 cm). Le test de Fisher confirme l’homogénéité des variances entre les deux groupes (p = 0.4535).
+
+\paragraph{VO\textsubscript{2} estimé}
+Le VO\textsubscript{2} estimé est plus élevé chez les individus de 35 ans ou moins (38.51 ml/kg/min) comparativement aux individus de plus de 35 ans (35.02 ml/kg/min), traduisant une diminution de la capacité cardiorespiratoire avec l’âge. Le test de comparaison des variances ne montre toutefois aucune différence significative (p = 0.4865).
+
+\paragraph{Conclusion partielle}
+Les tests de Fisher indiquent une homogénéité des variances pour l’ensemble des variables étudiées entre les deux groupes d’âge. Les différences observées concernent principalement les moyennes, notamment pour les variables de performance physique, ce qui permet l’utilisation de tests paramétriques pour approfondir la comparaison des groupes.
+
+\subsection{Test de Proportions}
+
+Afin d’évaluer si les proportions observées pour certaines caractéristiques de l’échantillon diffèrent significativement de 50\%, nous avons réalisé des \textbf{tests de proportion à un échantillon} avec correction de continuité. Les variables analysées sont : le sexe, l’âge et l’IMC.
+
+```{r}
+data$age_group <- ifelse(data$age <= 35, "Under_35", "Over_35")
+data$bmi_group <- ifelse(data$bmi < 25, "Under_25", "Over_25")
+sex_table <- table(data$sex)
+prop.test(sex_table)
+age_table <- table(data$age_group)
+prop.test(age_table)
+bmi_table <- table(data$bmi_group)
+prop.test(bmi_table)
+```
+\subsubsection{Sexe (Homme vs Femme)}
+
+Le test de proportion pour le sexe donne les résultats suivants :
+\begin{itemize}
+    \item Statistique du test : $X^2 = 251.34$, $df = 1$
+    \item Valeur p : $p < 2.2 \times 10^{-16}$
+    \item Intervalle de confiance à 95\% pour la proportion de femmes : [0.302, 0.344]
+    \item Proportion observée : $p = 0.323$
+\end{itemize}
+
+\noindent \textbf{Interprétation :} La proportion de femmes dans l’échantillon (32,3\%) est significativement différente de 50\% ($p < 0.001$). On peut conclure que l’échantillon contient une majorité d’hommes.
+
+\subsubsection{Âge (Moins de 35 ans vs 35 ans et plus)}
+
+Le test de proportion pour l’âge montre :
+\begin{itemize}
+    \item Statistique du test : $X^2 = 151.8$, $df = 1$
+    \item Valeur p : $p < 2.2 \times 10^{-16}$
+    \item Intervalle de confiance à 95\% pour la proportion de participants de 35 ans et plus : [0.616, 0.659]
+    \item Proportion observée : $p = 0.638$
+\end{itemize}
+
+\noindent \textbf{Interprétation :} La proportion de participants âgés de 35 ans et plus (63,8\%) est significativement différente de 50\%, indiquant que la majorité de l’échantillon est constituée d’adultes de 35 ans et plus.
+
+\subsubsection{IMC (Inférieur à 25 vs Supérieur ou égal à 25)}
+
+Le test de proportion pour l’IMC fournit :
+\begin{itemize}
+    \item Statistique du test : $X^2 = 96.361$, $df = 1$
+    \item Valeur p : $p < 2.2 \times 10^{-16}$
+    \item Intervalle de confiance à 95\% pour la proportion d’individus ayant un IMC supérieur ou égal à 25 : [0.369, 0.412]
+    \item Proportion observée : $p = 0.390$
+\end{itemize}
+
+\noindent \textbf{Interprétation :} La proportion d’individus avec un IMC supérieur ou égal à 25 (39,0\%) est significativement différente de 50\%, ce qui indique que la majorité de l’échantillon a un IMC inférieur à 25.
+
+\subsection{Modèle pour la force de préhension (Hand Grip Strength)}
+
+\textbf{Modèle :} Régression linéaire multiple avec les variables explicatives : \texttt{sex}, \texttt{age}, \texttt{bmi}, \texttt{percent\_body\_fat}.
+
+\textbf{Étapes :}
+\begin{enumerate}
+    \item Régression initiale avec toutes les variables.
+    \item Sélection des variables par méthode stepwise (critère AIC).
+    \item Suppression des outliers (résidus étudiants $> 2$).
+    \item Estimation finale du modèle.
+\end{enumerate}
+```{r}
+# Step 5: Stepwise regression
+model_grip <- lm(hand_grip_strength_kg ~ sex + age + bmi + percent_body_fat, data = data)
+step_grip <- step(model_grip, direction = "both")
+
+# Step 6: Remove outliers
+library(MASS)
+sre_grip <- studres(step_grip)
+keep_grip <- which(abs(sre_grip) < 2)
+clean_grip <- data[keep_grip, ]
+
+# Step 7: Evaluate
+final_grip <- lm(hand_grip_strength_kg ~ sex + age + bmi + percent_body_fat, data = clean_grip)
+summary(final_grip)
+
+SEE_grip <- sqrt(mean(final_grip$residuals^2))
+SEE_grip
+plot(model_grip)
+```
+\textbf{Résultats principaux :}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lccc}
+\hline
+\textbf{Variable} & \textbf{Estimate} & \textbf{p-value} & \textbf{Interprétation} \\
+\hline
+Intercept          & 6.91     & 0.0035 **  & Valeur de référence si toutes les variables = 0 \\
+sex (M)            & 15.22    & $< 2e-16$ *** & Les hommes ont une force plus élevée de 15 kg en moyenne \\
+age                & 0.035    & 0.0018 ** & L’âge est faiblement mais positivement associé à la force \\
+bmi                & 0.727    & $< 2e-16$ *** & IMC positif corrélé à une force plus élevée \\
+percent\_body\_fat & -0.0008  & 0.987     & Pas significatif \\
+\hline
+\end{tabular}
+\caption{Coefficients du modèle de la force de préhension}
+\end{table}
+
+\textbf{Indicateurs du modèle :}
+\begin{itemize}
+    \item $R^2$ ajusté : 0.608 (le modèle explique environ 61\% de la variance)
+    \item SEE (Erreur standard de l’estimation) : 6.4 kg
+\end{itemize}
+
+\textbf{Analyse :} Sexe, âge et IMC sont significatifs, tandis que la masse grasse n’est pas. Le modèle est relativement performant.
+
+\subsection{Modèle pour la VO\textsubscript{2} estimée (VO\textsubscript{2} max)}
+
+\textbf{Modèle :} Régression linéaire multiple avec \texttt{sex}, \texttt{age}, \texttt{bmi}, \texttt{percent\_body\_fat}.
+
+\textbf{Étapes :} Même approche que pour la force de préhension (stepwise + suppression des outliers).
+```{r}
+model_vo2 <- lm(vo2_estimate_ml_per_kg_min ~ sex + age + bmi + percent_body_fat, data = data)
+step_vo2 <- step(model_vo2, direction = "both")
+
+sre_vo2 <- studres(step_vo2)
+keep_vo2 <- which(abs(sre_vo2) < 2)
+clean_vo2 <- data[keep_vo2, ]
+
+final_vo2 <- lm(vo2_estimate_ml_per_kg_min ~ sex + age + bmi + percent_body_fat, data = clean_vo2)
+summary(final_vo2)
+
+SEE_vo2 <- sqrt(mean(final_vo2$residuals^2))
+SEE_vo2
+plot(model_vo2)
+```
+\textbf{Résultats principaux :}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lccc}
+\hline
+\textbf{Variable} & \textbf{Estimate} & \textbf{p-value} & \textbf{Interprétation} \\
+\hline
+Intercept          & 45.72    & $< 2e-16$ *** & VO\textsubscript{2} estimée de référence \\
+sex (M)            & 4.74     & 9.73e-13 ** & Les hommes ont une VO\textsubscript{2} plus élevée \\
+age                & -0.147   & $< 2e-16$ *** & La VO\textsubscript{2} diminue avec l’âge \\
+bmi                & -0.03    & 0.55        & Non significatif \\
+percent\_body\_fat & -0.122   & 0.005 **    & La masse grasse diminue légèrement la VO\textsubscript{2} \\
+\hline
+\end{tabular}
+\caption{Coefficients du modèle VO\textsubscript{2} estimée}
+\end{table}
+
+\textbf{Indicateurs du modèle :}
+\begin{itemize}
+    \item $R^2$ ajusté : 0.311 (le modèle explique ~31\% de la variance)
+    \item SEE : 5.31 ml/kg/min
+\end{itemize}
+
+\textbf{Analyse :} Sexe, âge et masse grasse sont significatifs, mais l’IMC ne l’est pas. Ce modèle est moins précis que celui de la force de préhension.
+
+\subsection{Synthèse et Comparaison des Modèles}
+\begin{itemize}
+    \item Force de préhension : modèle plus précis ($R^2 \approx 0.61$)
+    \item VO\textsubscript{2} : modèle moins précis ($R^2 \approx 0.31$)
+    \item Variables clés : sexe et âge influencent fortement les deux mesures
+    \item Implication : estimation possible des indicateurs physiques à partir de données simples, avec des précisions variables.
+\end{itemize}
+
+\section{Conclusion Générale}
+
+Ce projet a permis de réaliser une analyse statistique complète des données physiologiques et anthropométriques afin de mieux comprendre les relations entre les caractéristiques individuelles et les performances physiques.
+
+L’analyse exploratoire a mis en évidence les principales tendances des variables étudiées, ainsi que la présence de valeurs aberrantes susceptibles d’influencer certaines mesures. Les tests de normalité (Shapiro–Wilk et Kolmogorov–Smirnov) ont montré que certaines variables ne respectaient pas strictement la normalité, ce qui a orienté le choix des méthodes statistiques appropriées. L’utilisation du bootstrap a également permis de confirmer que les moyennes des variables pouvaient être considérées comme approximativement normales.
+
+Les analyses comparatives ont révélé l’influence significative de plusieurs facteurs démographiques et corporels. Le sexe apparaît comme un déterminant majeur de la condition physique, avec des différences significatives observées pour la force de préhension, la flexibilité, la capacité cardiorespiratoire, le pourcentage de masse grasse et l’endurance musculaire. L’âge influence également certaines performances physiques, notamment la capacité cardiovasculaire et l’endurance musculaire, qui tendent à diminuer avec l’avancée en âge.
+
+L’étude des corrélations a mis en évidence des relations importantes entre certaines variables, comme la corrélation négative entre le pourcentage de masse grasse et la force musculaire ou la capacité cardiovasculaire. Ces résultats confirment l’importance de la composition corporelle dans l’évaluation de la condition physique.
+
+En résumé, ce projet démontre la pertinence des outils statistiques pour analyser et interpréter des données réelles issues du domaine de la santé et du sport. Il souligne également l’importance d’une approche méthodologique rigoureuse dans la collecte, l’exploration et l’analyse des données afin de tirer des conclusions fiables et interprétables sur la condition physique des individus étudiés.
+
+
+
